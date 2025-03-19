@@ -6,4 +6,9 @@ public class HeadersDetector {
     {
 
     }
+
+    public boolean detectIfNoneMatch(Map<String, String> headers)
+    {
+
+    }
 }
