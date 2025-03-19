@@ -88,7 +88,7 @@ public class HttpRequest {
         return parsedRequest;
 
     }
-    private void parseRequestLine(String requestLine) {
+    private void parseRequestLine(String requestLine) throws IllegalArgumentException{
         String[] tokens = requestLine.split(" ");
         if(tokens.length>=1)
         {
