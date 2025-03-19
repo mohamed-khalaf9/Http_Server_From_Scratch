@@ -57,7 +57,7 @@ public class HttpRequest {
         headers.put(key, value);
     }
 
-    public HttpRequest parseRequest(String line) {
+    public HttpRequest parseRequest(String line) throws IllegalArgumentException{
         // fetch request components based on crlf \r\n (request line,headers,body)
         HttpRequest parsedRequest = new HttpRequest();
 
