@@ -15,4 +15,9 @@ public class HeadersDetector {
     {
 
     }
+
+    public boolean detectRange(Map<String, String> headers)
+    {
+
+    }
 }
