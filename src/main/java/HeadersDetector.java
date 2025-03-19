@@ -18,6 +18,15 @@ public class HeadersDetector {
 
     public boolean detectIfNoneMatch(Map<String, String> headers)
     {
+        if(headers.containsKey("If-None-Match"))
+        {
+            String headerValue = headers.get("If-None-Match");
+            headerValue = headerValue.strip();
+            int size = headerValue.length();
+            if(size>1 && headerValue.charAt(size-1)=='"' && headerValue.charAt(size-1)=='"')
+                return true;
+        }
+        return false;
 
     }
     public boolean detectAcceptEncoding(Map<String, String> headers)
