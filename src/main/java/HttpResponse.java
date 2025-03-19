@@ -1,10 +1,11 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class HttpResponse {
     private String version;
     private int statusCode;
-    private int statusText;
+    private String statusText;
     private Map<String, String> headers;
     private String body;
 
@@ -30,11 +31,11 @@ public class HttpResponse {
         this.statusCode = statusCode;
     }
 
-    public int getStatusText() {
+    public String getStatusText() {
         return statusText;
     }
 
-    public void setStatusText(int statusText) {
+    public void setStatusText(String statusText) {
         this.statusText = statusText;
     }
 
@@ -64,4 +65,22 @@ public class HttpResponse {
                 '}';
     }
 
+    public String constructResponseFormat() {
+        StringBuilder response = new StringBuilder();
+        response.append(this.version)
+                .append(" ")
+                .append(this.statusCode)
+                .append(" ")
+                .append(this.statusText)
+                .append("\r\n");
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            response.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
+        }
+        response.append("\r\n");
+        response.append(Objects.toString(this.body, "")).append("\r\n");
+
+        return response.toString();
+    }
+
 }
+
