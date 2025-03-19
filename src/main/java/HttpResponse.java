@@ -52,4 +52,16 @@ public class HttpResponse {
     public Map<String, String> getHeaders() {
         return headers;
     }
+
+    @Override
+    public String toString() {
+        return "HttpResponse{" +
+                "version='" + version + '\'' +
+                ", statusCode=" + statusCode +
+                ", statusText=" + statusText +
+                ", headers=" + headers +
+                ", body='" + body + '\'' +
+                '}';
+    }
+
 }
