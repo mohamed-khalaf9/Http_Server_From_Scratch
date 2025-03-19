@@ -84,5 +84,11 @@ public class HttpRequest {
         return parsedRequest;
 
     }
+    private void parseRequestLine(String requestLine) {
+        String[] tokens = requestLine.split(" ");
+        this.method = tokens[0];
+        this.target = tokens[1];
+        this.version = tokens[2];
+    }
 
 }
