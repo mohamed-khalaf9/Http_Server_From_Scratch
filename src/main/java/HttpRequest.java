@@ -90,10 +90,25 @@ public class HttpRequest {
     }
     private void parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
+        if(tokens.length>=1)
+        {
+            this.setMethod(tokens[0]);
+        }
+        else
+            throw new IllegalArgumentException("Invalid request line: Missing method");
 
-        this.setMethod(tokens[0].stripLeading());
-        this.setTarget(tokens[1].stripLeading());
-        this.setVersion(tokens[2].stripLeading());
+        if(tokens.length>=2)
+        {
+            this.setTarget(tokens[1]);
+        }
+        else
+            throw new IllegalArgumentException("Invalid request line: Missing target");
+
+        if(tokens.length>=3){
+            this.setVersion(tokens[2]);
+        }
+        else
+            throw new IllegalArgumentException("Invalid request line: Missing version");
     }
 
     @Override
