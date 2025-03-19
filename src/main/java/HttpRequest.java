@@ -63,7 +63,7 @@ public class HttpRequest {
 
         String[] tokens = line.split("\r\n", -1);
 
-        String requestLine = tokens[0].stripLeading();
+        String requestLine = tokens[0].strip();
         parsedRequest.parseRequestLine(requestLine);
 
         int index = 1;
@@ -90,6 +90,7 @@ public class HttpRequest {
     }
     private void parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
+
         this.setMethod(tokens[0].stripLeading());
         this.setTarget(tokens[1].stripLeading());
         this.setVersion(tokens[2].stripLeading());
