@@ -13,5 +13,20 @@ public class RateLimiter {
         this.requestslog = new LinkedList<Long>();
     }
 
+    public boolean allowRequest(long requestArrivalTime)
+    {
+        while(!requestslog.isEmpty() && (requestArrivalTime - requestslog.peek()) > maxWindowSize)
+        {
+            requestslog.poll();
+        }
+
+        if(requestslog.size() < maxRequests)
+        {
+            requestslog.offer(requestArrivalTime);
+            return true;
+        }
+        return false;
+    }
+
 
 }
