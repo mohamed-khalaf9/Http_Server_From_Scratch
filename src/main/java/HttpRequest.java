@@ -86,9 +86,9 @@ public class HttpRequest {
     }
     private void parseRequestLine(String requestLine) {
         String[] tokens = requestLine.split(" ");
-        this.method = tokens[0];
-        this.target = tokens[1];
-        this.version = tokens[2];
+        this.setMethod(tokens[0].stripLeading());
+        this.setTarget(tokens[1].stripLeading());
+        this.setVersion(tokens[2].stripLeading());
     }
 
     @Override
