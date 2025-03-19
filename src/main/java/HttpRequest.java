@@ -11,6 +11,10 @@ public class HttpRequest {
 
     public HttpRequest() {
         this.headers = new HashMap<>();
+        this.setMethod("");
+        this.setTarget("");
+        this.setVersion("");
+        this.setBody("");
     }
 
     public String getMethod() {
