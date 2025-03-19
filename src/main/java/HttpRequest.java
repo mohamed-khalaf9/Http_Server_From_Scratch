@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
@@ -7,6 +8,9 @@ public class HttpRequest {
     private Map<String, String> headers;
     private String body;
 
+    public HttpRequest() {
+         this.headers = new HashMap<>();
+    }
 
     public String getMethod() {
         return method;
