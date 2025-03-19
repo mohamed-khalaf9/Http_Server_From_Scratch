@@ -91,4 +91,14 @@ public class HttpRequest {
         this.version = tokens[2];
     }
 
+    @Override
+    public String toString() {
+        return "HttpRequest{" +
+                "method='" + method + '\'' +
+                ", target='" + target + '\'' +
+                ", version='" + version + '\'' +
+                ", headers=" + headers +
+                ", body='" + body + '\'' +
+                '}';
+    }
 }
