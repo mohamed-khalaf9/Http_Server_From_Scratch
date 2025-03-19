@@ -11,4 +11,8 @@ public class HeadersDetector {
     {
 
     }
+    public boolean detectAcceptEncoding(Map<String, String> headers)
+    {
+
+    }
 }
