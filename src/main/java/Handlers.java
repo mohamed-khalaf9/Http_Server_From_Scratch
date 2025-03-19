@@ -1,12 +1,12 @@
 public class Handlers {
 
-    public synchronized void createFileHandler(String fileName) {
+    public synchronized HttpResponse createFileHandler(HttpRequest request) {
 
     }
-    public synchronized void getFileHandler(String fileName) {
+    public synchronized HttpResponse getFileHandler(HttpRequest request) {
 
     }
-    public synchronized void updateFileHandler(String fileName, String toBeAddedContent) {
+    public synchronized HttpResponse updateFileHandler(HttpRequest request) {
 
 
     }
