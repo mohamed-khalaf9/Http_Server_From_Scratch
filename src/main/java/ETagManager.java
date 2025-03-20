@@ -33,5 +33,10 @@ public class ETagManager {
         return etag;
     }
 
+    public synchronized boolean compare(String filePath,String etag) throws NoSuchAlgorithmException, IOException {
+        String currentEtag = this.generateEtag(filePath);
+        return currentEtag.equals(etag);
+    }
+
 
 }
