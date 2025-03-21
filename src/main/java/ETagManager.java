@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.ECField;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +34,15 @@ public class ETagManager {
         return etag;
     }
 
-    public synchronized boolean compare(String filePath,String etag) throws NoSuchAlgorithmException, IOException {
-        String currentEtag = this.generateEtag(filePath);
-        return currentEtag.equals(etag);
+    public synchronized boolean compare(String filePath,String etag) {
+        try {
+            String currentEtag = this.generateEtag(filePath);
+            return currentEtag.equals(etag);
+        }
+        catch (Exception c)
+        {
+            return false;
+        }
     }
 
 
