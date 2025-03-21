@@ -71,6 +71,20 @@ public class Handlers {
             return response;
         }
 
+        boolean ifNonMatchHeaderExist = detector.detectIfNoneMatch(request.getHeaders());
+        if (ifNonMatchHeaderExist) {
+            boolean ifMatch = etagManager.compare(fileName, request.getHeaders().get("If-None-Match"));
+            if (ifMatch) {
+                response.setStatusCode(304);
+                response.setStatusText("Not Modified");
+                response.setBody("Not Modified");
+                response.addHeader("ETag", etagManager.getFileEtag(fileName));
+                return response;
+            }
+        }
+
+
+
 
 
 
