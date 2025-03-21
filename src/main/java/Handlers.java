@@ -62,6 +62,15 @@ public class Handlers {
             return response;
         }
 
+        File file = new File(fileName);
+        if(!file.exists())
+        {
+            response.setStatusCode(404);
+            response.setStatusText("Not Found");
+            response.setBody("File Not Found");
+            return response;
+        }
+
 
 
 
