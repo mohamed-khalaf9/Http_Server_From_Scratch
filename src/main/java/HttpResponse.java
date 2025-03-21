@@ -1,3 +1,4 @@
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -7,7 +8,7 @@ public class HttpResponse {
     private int statusCode;
     private String statusText;
     private Map<String, String> headers;
-    private String body;
+    private byte[] body;
 
     public HttpResponse()
     {
@@ -39,12 +40,19 @@ public class HttpResponse {
         this.statusText = statusText;
     }
 
-    public String getBody() {
-        return body;
+    public byte[] getBody() {
+        return this.body;
     }
-
-    public void setBody(String body) {
+    public void setBody(byte[] body) {
         this.body = body;
+        this.headers.put("Content-Length", String.valueOf(body.length));
+    }
+    public void setBody(String body)
+    {
+        this.body = body.getBytes(StandardCharsets.UTF_8);
+        this.headers.put("Content-Length", String.valueOf(this.body.length));
+        this.headers.put("Content-Type", "text/plain; charset=UTF-8");
+
     }
 
     public void addHeader(String key, String value) {
