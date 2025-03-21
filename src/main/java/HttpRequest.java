@@ -78,7 +78,7 @@ public class HttpRequest {
             ++index;
         }
 
-        if(index +1 < tokens.length)
+        if(index < tokens.length)
         {
             parsedRequest.setBody(String.join("\r\n", Arrays.copyOfRange(tokens,index+1,tokens.length)));
         }
