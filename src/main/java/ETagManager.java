@@ -16,22 +16,27 @@ public class ETagManager {
         fileEtags = new ConcurrentHashMap<>();
     }
 
-    public synchronized String generateEtag(String filePath) throws NoSuchAlgorithmException, IOException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        FileInputStream fis = new FileInputStream(filePath);
+    public synchronized String generateEtag(String filePath) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            FileInputStream fis = new FileInputStream(filePath);
 
-        byte[] buffer = new byte[4192];
-        int bytesRead;
+            byte[] buffer = new byte[4192];
+            int bytesRead;
 
-        while((bytesRead = fis.read(buffer)) !=-1)
-        {
-            digest.update(buffer, 0, (int)bytesRead);
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                digest.update(buffer, 0, (int) bytesRead);
+            }
+            fis.close();
+            byte[] hash = digest.digest();
+            String etag = Base64.getEncoder().encodeToString(hash);
+            fileEtags.put(filePath, etag);
+            return etag;
         }
-        fis.close();
-        byte[] hash = digest.digest();
-        String etag = Base64.getEncoder().encodeToString(hash);
-        fileEtags.put(filePath, etag);
-        return etag;
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
     public synchronized boolean compare(String filePath,String etag) {
