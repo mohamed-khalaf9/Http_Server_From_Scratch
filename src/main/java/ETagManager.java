@@ -49,6 +49,8 @@ public class ETagManager {
             return false;
         }
     }
-
+    public synchronized String getFileEtag(String filePath) {
+        return fileEtags.get(filePath);
+    }
 
 }
