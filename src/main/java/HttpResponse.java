@@ -92,7 +92,7 @@ public class HttpResponse {
             response.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
         }
         response.append("\r\n");
-        response.append(Objects.toString(this.body, "")).append("\r\n");
+        response.append(Objects.toString(this.bodyString, "")).append("\r\n");
 
         return response.toString();
     }
