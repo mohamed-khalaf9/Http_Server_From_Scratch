@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
@@ -53,6 +54,8 @@ public class Handlers {
         HttpResponse response = new HttpResponse();
         ETagManager etagManager = new ETagManager();
         HeadersDetector detector = new HeadersDetector();
+        RangeRequestHandler rangeHandler = new RangeRequestHandler();
+
 
         String fileName = request.getBody().trim();
         if (fileName.isEmpty()) {
@@ -82,6 +85,45 @@ public class Handlers {
                 return response;
             }
         }
+
+        byte[] fileContent;
+
+        boolean isRangeRequest = detector.detectRange(request.getHeaders());
+        if (isRangeRequest) {
+            long[] rangeValues = Utilities.parseRange(request.getHeaders().get("Range"), file.length());
+            long start = rangeValues[0];
+            long end = rangeValues[1];
+
+            // If range parsing failed, return the whole file
+            if (start == 0 && end == 0) {
+                isRangeRequest = false;
+            } else {
+                try {
+                    fileContent = rangeHandler.handleRangeRequest(fileName, start, end);
+                    response.setStatusCode(206);
+                    response.setStatusText("Partial Content");
+                    response.addHeader("Content-Range", "bytes " + start + "-" + end + "/" + file.length());
+                } catch (IOException e) {
+                    isRangeRequest = false; // Fall back to full file if range handling fails
+                }
+            }
+        }
+
+        if (!isRangeRequest) {
+            try (FileInputStream fis = new FileInputStream(file)) {
+                fileContent = fis.readAllBytes();
+            } catch (IOException e) {
+                response.setStatusCode(500);
+                response.setStatusText("Internal Server Error");
+                response.setBody("Failed to read file");
+                return response;
+            }
+        }
+
+
+
+
+
 
 
 
