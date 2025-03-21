@@ -50,6 +50,26 @@ public class Handlers {
 
     }
     public synchronized HttpResponse getFileHandler(HttpRequest request) {
+        HttpResponse response = new HttpResponse();
+        ETagManager etagManager = new ETagManager();
+        HeadersDetector detector = new HeadersDetector();
+
+        String fileName = request.getBody().trim();
+        if (fileName.isEmpty()) {
+            response.setStatusCode(400);
+            response.setStatusText("Bad Request");
+            response.setBody("File name is missing");
+            return response;
+        }
+
+
+
+
+
+
+
+
+
 
     }
     public synchronized HttpResponse updateFileHandler(HttpRequest request) {
