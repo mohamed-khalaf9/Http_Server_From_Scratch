@@ -8,7 +8,8 @@ public class HttpResponse {
     private int statusCode;
     private String statusText;
     private Map<String, String> headers;
-    private byte[] body;
+    private byte[] bodyBytes;
+    private String bodyString;
 
     public HttpResponse()
     {
@@ -40,20 +41,24 @@ public class HttpResponse {
         this.statusText = statusText;
     }
 
-    public byte[] getBody() {
-        return this.body;
+    public byte[] getBodyBytes() {
+        return this.bodyBytes;
     }
-    public void setBody(byte[] body) {
-        this.body = body;
+    public void setBodyBytes(byte[] body) {
+        this.bodyBytes = body;
         this.headers.put("Content-Length", String.valueOf(body.length));
     }
-    public void setBody(String body)
+    public void setBodyString(String body)
     {
-        this.body = body.getBytes(StandardCharsets.UTF_8);
-        this.headers.put("Content-Length", String.valueOf(this.body.length));
+        this.bodyString = body;
+        this.headers.put("Content-Length", String.valueOf(this.bodyString.length()));
         this.headers.put("Content-Type", "text/plain; charset=UTF-8");
 
     }
+    public String getBodyString(){
+        return this.bodyString;
+    }
+
 
     public void addHeader(String key, String value) {
         this.headers.put(key, value);
