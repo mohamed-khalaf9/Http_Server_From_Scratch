@@ -73,7 +73,7 @@ public class HttpRequest {
             String[] headerTokens = header.split(":", 2);
             if(headerTokens.length == 2)
             {
-                parsedRequest.addHeader(headerTokens[0], headerTokens[1]);
+                parsedRequest.addHeader(headerTokens[0].trim(), headerTokens[1].trim());
             }
             ++index;
         }
