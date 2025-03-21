@@ -1,4 +1,5 @@
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -72,9 +73,10 @@ public class HttpResponse {
         return "HttpResponse{" +
                 "version='" + version + '\'' +
                 ", statusCode=" + statusCode +
-                ", statusText=" + statusText +
+                ", statusText='" + statusText + '\'' +
                 ", headers=" + headers +
-                ", body='" + body + '\'' +
+                ", bodyBytes=" + Arrays.toString(bodyBytes) +
+                ", bodyString='" + bodyString + '\'' +
                 '}';
     }
 
