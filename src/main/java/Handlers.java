@@ -145,5 +145,14 @@ public class Handlers {
     public synchronized HttpResponse updateFileHandler(HttpRequest request) {
 
 
+
+    }
+    public synchronized HttpResponse pingHandler(HttpRequest request) {
+        HttpResponse response = new HttpResponse();
+        response.setStatusCode(200);
+        response.setStatusText("OK");
+        response.setBody("Pong");
+        return response;
+
     }
 }
