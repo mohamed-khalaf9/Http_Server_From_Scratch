@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class Router {
-    public Map<String,Map<String, Function<HttpRequest, HttpResponse>>> routes;
+    public static Map<String,Map<String, Function<HttpRequest, HttpResponse>>> routes;
 
     public Router() {
         routes = new ConcurrentHashMap<>();
@@ -16,17 +16,12 @@ public class Router {
                 .put(path, handler);
     }
 
-    public Optional<Function<HttpRequest, HttpResponse>> getHandler(String method, String target)
-    {
-        Map<String,Function<HttpRequest, HttpResponse>> handlers = routes.get(method);
-        if(handlers != null)
-        {
-            return Optional.ofNullable(handlers.get(target));
+    public Function<HttpRequest, HttpResponse> getHandler(String method, String target) {
+        Map<String, Function<HttpRequest, HttpResponse>> handlers = routes.get(method);
+        if (handlers != null) {
+            return handlers.get(target); // Returns null if not found
         }
-
-        return Optional.empty();
-
+        return null;
     }
-
 
 }
