@@ -1,6 +1,10 @@
-import java.util.Arrays;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class HttpRequest {
     private String method;
@@ -8,6 +12,7 @@ public class HttpRequest {
     private String version;
     private Map<String, String> headers;
     private String body;
+    private String pathParametar;
 
     public HttpRequest() {
         this.headers = new HashMap<>();
@@ -15,6 +20,13 @@ public class HttpRequest {
         this.setTarget("");
         this.setVersion("");
         this.setBody("");
+    }
+    public HttpRequest(String method, String target, Map<String, String> headers, String pathParametar) {
+        this.method = method;
+        this.target = target;
+        this.headers = headers;
+        this.pathParametar = pathParametar;
+
     }
 
     public String getMethod() {
@@ -57,58 +69,12 @@ public class HttpRequest {
         headers.put(key, value);
     }
 
-    public HttpRequest parseRequest(String line) throws IllegalArgumentException{
-        // fetch request components based on crlf \r\n (request line,headers,body)
-        HttpRequest parsedRequest = new HttpRequest();
-
-        String[] tokens = line.split("\r\n", -1);
-
-        String requestLine = tokens[0].strip();
-        parsedRequest.parseRequestLine(requestLine);
-
-        int index = 1;
-        while(index <tokens.length && !tokens[index].isEmpty())
-        {
-            String header = tokens[index].strip();
-            String[] headerTokens = header.split(":", 2);
-            if(headerTokens.length == 2)
-            {
-                parsedRequest.addHeader(headerTokens[0].trim(), headerTokens[1].trim());
-            }
-            ++index;
-        }
-
-        if(index < tokens.length)
-        {
-            parsedRequest.setBody(String.join("\r\n", Arrays.copyOfRange(tokens,index+1,tokens.length)));
-        }
-        else
-            parsedRequest.setBody("");
-
-        return parsedRequest;
-
+    public String getPathParametar() {
+        return pathParametar;
     }
-    private void parseRequestLine(String requestLine) throws IllegalArgumentException{
-        String[] tokens = requestLine.split(" ");
-        if(tokens.length>=1)
-        {
-            this.setMethod(tokens[0]);
-        }
-        else
-            throw new IllegalArgumentException("Invalid request line: Missing method");
 
-        if(tokens.length>=2)
-        {
-            this.setTarget(tokens[1]);
-        }
-        else
-            throw new IllegalArgumentException("Invalid request line: Missing target");
-
-        if(tokens.length>=3){
-            this.setVersion(tokens[2]);
-        }
-        else
-            throw new IllegalArgumentException("Invalid request line: Missing version");
+    public void setPathParametar(String pathParametar) {
+        this.pathParametar = pathParametar;
     }
 
     @Override
@@ -119,6 +85,7 @@ public class HttpRequest {
                 ", version='" + version + '\'' +
                 ", headers=" + headers +
                 ", body='" + body + '\'' +
+                ", pathParametar='" + pathParametar + '\'' +
                 '}';
     }
 }
