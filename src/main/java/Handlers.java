@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Base64;
 
@@ -142,10 +143,54 @@ public class Handlers {
         return response;
 
     }
-    public synchronized HttpResponse updateFileHandler(HttpRequest request) {
-
+    public synchronized HttpResponse updateFileHandler(HttpRequest request)  {
        HttpResponse response = new HttpResponse();
-       return response;
+
+       String pathParametar = request.getPathParametar().trim();
+       String[] pathParametarParts = pathParametar.split("/");
+       String fileNameAndContent = pathParametarParts[2];
+       String[] fileNameAndContentParts = fileNameAndContent.split(":",2);
+       if(fileNameAndContentParts.length != 2)
+       {
+           response.setStatusCode(400);
+           response.setStatusText("Bad Request");
+           response.setBody("Bad Request");
+           return response;
+       }
+       String fileName = fileNameAndContentParts[0];
+       String fileContent = fileNameAndContentParts[1];
+       if(!fileName.isEmpty() || !fileContent.isEmpty())
+       {
+           response.setStatusCode(400);
+           response.setStatusText("Bad Request");
+           response.setBody("Bad Request");
+       }
+       File file = new File(fileName);
+       if(!file.exists())
+       {
+           response.setStatusCode(404);
+           response.setStatusText("Not Found");
+           response.setBody("File Not Found");
+           return response;
+       }
+       try(FileWriter fw = new FileWriter(fileName,true);)
+       {
+           fw.write(fileContent);
+           response.setStatusCode(200);
+           response.setStatusText("OK");
+           response.setBody("Content added successfully");
+           ETagManager etagManager = new ETagManager();
+           String etag = etagManager.generateEtag(fileName);
+           response.addHeader("ETag",etag);
+           return response;
+
+       }
+       catch(IOException e) {
+           response.setStatusCode(500);
+           response.setStatusText("Internal Server Error");
+           response.setBody("Internal Server Error");
+           return response;
+       }
 
     }
     public synchronized HttpResponse pingHandler(HttpRequest request) {
