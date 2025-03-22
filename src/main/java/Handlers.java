@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Base64;
 
 public class Handlers {
 
@@ -47,7 +48,6 @@ public class Handlers {
             return response;
         }
 
-
     }
     public synchronized HttpResponse getFileHandler(HttpRequest request) {
         HttpResponse response = new HttpResponse();
@@ -85,7 +85,7 @@ public class Handlers {
             }
         }
 
-        byte[] fileContent;
+        byte[] fileContent = null;
 
         boolean isRangeRequest = detector.detectRange(request.getHeaders());
         if (isRangeRequest) {
@@ -121,8 +121,8 @@ public class Handlers {
         boolean supportsGzip = detector.detectAcceptEncoding(request.getHeaders());
         if (supportsGzip) {
             try {
-                GZipCompressor compressor = new GZipCompressor();
-                fileContent = compressor.compressFile(fileName);
+
+                fileContent = GZipCompressor.compressFile(fileContent);
                 response.addHeader("Content-Encoding", "gzip");
             } catch (IOException e) {
                 response.setStatusCode(500);
@@ -134,27 +134,12 @@ public class Handlers {
 
         response.setStatusCode(isRangeRequest ? 206 : 200);
         response.setStatusText(isRangeRequest ? "Partial Content" : "OK");
-        response.setBody();
+        String body = Base64.getEncoder().encodeToString(fileContent);
+        response.setBody(body);
         response.addHeader("Content-Length", String.valueOf(fileContent.length));
         response.addHeader("ETag", etagManager.getFileEtag(fileName));
 
         return response;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
     public synchronized HttpResponse updateFileHandler(HttpRequest request) {
