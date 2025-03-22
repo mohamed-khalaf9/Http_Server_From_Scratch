@@ -1,11 +1,10 @@
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class Router {
-    public Map<String,Map<String, Function<HttpRequest,HttpResponse>>> routes;
+    public Map<String,Map<String, Function<HttpRequest, HttpResponse>>> routes;
 
     public Router() {
         routes = new ConcurrentHashMap<>();
@@ -17,9 +16,9 @@ public class Router {
                 .put(path, handler);
     }
 
-    public Optional<Function<HttpRequest,HttpResponse>> getHandler(String method, String target)
+    public Optional<Function<HttpRequest, HttpResponse>> getHandler(String method, String target)
     {
-        Map<String,Function<HttpRequest,HttpResponse>> handlers = routes.get(method);
+        Map<String,Function<HttpRequest, HttpResponse>> handlers = routes.get(method);
         if(handlers != null)
         {
             return Optional.ofNullable(handlers.get(target));
