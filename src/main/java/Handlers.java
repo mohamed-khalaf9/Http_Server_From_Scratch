@@ -11,7 +11,7 @@ public class Handlers {
 
 
 
-        String fileName = request.getBody().trim();
+        String fileName = request.getPathParametar().trim();
         if (fileName.isEmpty()) {
             response.setStatusCode(400);
             response.setStatusText("Bad Request");
@@ -56,7 +56,7 @@ public class Handlers {
         RangeRequestHandler rangeHandler = new RangeRequestHandler();
 
 
-        String fileName = request.getBody().trim();
+        String fileName = request.getPathParametar().trim();
         if (fileName.isEmpty()) {
             response.setStatusCode(400);
             response.setStatusText("Bad Request");
@@ -144,7 +144,8 @@ public class Handlers {
     }
     public synchronized HttpResponse updateFileHandler(HttpRequest request) {
 
-
+       HttpResponse response = new HttpResponse();
+       return response;
 
     }
     public synchronized HttpResponse pingHandler(HttpRequest request) {
