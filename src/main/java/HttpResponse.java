@@ -61,8 +61,7 @@ public class HttpResponse {
         for(Map.Entry<String, String> header : headers.entrySet()){
             response.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
         }
-        response.append("\r\n");
-        response.append(body);
+        if(body != null) response.append(body);
         return response.toString();
     }
 
