@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 public class Handlers {
 
@@ -119,6 +118,27 @@ public class Handlers {
                 return response;
             }
         }
+        boolean supportsGzip = detector.detectAcceptEncoding(request.getHeaders());
+        if (supportsGzip) {
+            try {
+                GZipCompressor compressor = new GZipCompressor();
+                fileContent = compressor.compressFile(fileName);
+                response.addHeader("Content-Encoding", "gzip");
+            } catch (IOException e) {
+                response.setStatusCode(500);
+                response.setStatusText("Internal Server Error");
+                response.setBody("Failed to compress file");
+                return response;
+            }
+        }
+
+        response.setStatusCode(isRangeRequest ? 206 : 200);
+        response.setStatusText(isRangeRequest ? "Partial Content" : "OK");
+        response.setBody();
+        response.addHeader("Content-Length", String.valueOf(fileContent.length));
+        response.addHeader("ETag", etagManager.getFileEtag(fileName));
+
+        return response;
 
 
 
