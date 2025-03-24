@@ -1,6 +1,4 @@
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -28,28 +26,39 @@ public class ETagManager {
     }
 
 
-    private synchronized String generateETag(String fileName) throws IOException, NoSuchAlgorithmException {
-        Path filePath = Path.of(fileName);
-        if (!Files.exists(filePath)) {
-            throw new IOException("File not found: " + fileName);
+    public synchronized String generateETag(String fileName) throws IOException {
+        try {
+            Path filePath = Path.of(fileName);
+            if (!Files.exists(filePath)) {
+                throw new FileNotFoundException("File not found: " + fileName);
+            }
+
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+            // Read file in chunks to avoid memory issues
+            try (InputStream fis = new BufferedInputStream(Files.newInputStream(filePath))) {
+                byte[] buffer = new byte[8192]; // 8KB buffer
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    digest.update(buffer, 0, bytesRead);
+                }
+            }
+
+            // Get hash and encode to Base64 (without padding for consistency)
+            byte[] hash = digest.digest();
+            String etag= Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+            fileEtags.put(fileName,etag);
+            return etag;
+
+        } catch (NoSuchAlgorithmException e) {
+            throw new IOException("SHA-256 algorithm not available", e);
         }
-
-        byte[] fileContent = Files.readAllBytes(filePath);
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(fileContent);
-        return Base64.getEncoder().encodeToString(hash);
-    }
-    public synchronized void  createFileETag(String fileName) throws IOException, NoSuchAlgorithmException {
-        String etag = generateETag(fileName);
-        fileEtags.put(fileName.toString(), etag);
-    }
-    public synchronized void updateETag(String fileName) throws IOException, NoSuchAlgorithmException {
-        String newEtag = generateETag(fileName);
-        fileEtags.put(fileName, newEtag);
     }
 
 
-    public synchronized boolean compare(String fileName,String etag) throws IOException, NoSuchAlgorithmException {
+
+
+    public synchronized boolean compare(String fileName,String etag) throws IOException{
         String currentETag = generateETag(fileName); // Generate fresh ETag from file content
         return currentETag != null && currentETag.equals(etag);
     }
