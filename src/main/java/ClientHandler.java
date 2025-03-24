@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -27,16 +28,12 @@ public class ClientHandler implements  Runnable{
     }
     @Override
     public void run() {
-        try {
-            clientSocket.setSoTimeout(60000);
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
         boolean keepAlive = true;
         System.out.println("Hello, world!");
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
+            clientSocket.setSoTimeout(60000);
 
             while(keepAlive){
 
@@ -73,9 +70,7 @@ public class ClientHandler implements  Runnable{
                     clientSocket.close();
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -86,6 +81,7 @@ public class ClientHandler implements  Runnable{
         if (requestLine == null || requestLine.isEmpty()) {
             throw new IOException("Empty request line");
         }
+        requestArrivalTime = System.currentTimeMillis();
 
         // Split method, target, version
         String[] requestLineParts = requestLine.split(" ", 3);
