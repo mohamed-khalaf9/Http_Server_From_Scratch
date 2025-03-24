@@ -9,6 +9,8 @@ public class Main {
         // Register routes
         router.addRoute("POST", "/create", handlers::createFileHandler);
         router.addRoute("GET", "/file", handlers::getFileHandler);
+        router.addRoute("UPDATE", "/update", handlers::updateFileHandler);
+
         HttpServer server = new HttpServer(45321,router);
 
 
