@@ -23,20 +23,19 @@ public class RequestHandler implements Runnable{
 
 
 
-
     @Override
     public void run() {
-        Function<HttpRequest, HttpResponse> handler = router.getHandler(request.getMethod(), request.getTarget());
 
+        Function<HttpRequest, HttpResponse> handler = router.getHandler(request.getMethod(), request.getTarget());
         try {
             if (handler != null) {
                 HttpResponse response = handler.apply(request);
-                sendResponse(out, response); // Send the response back to the client
+                Utilities.sendResponse(out, response); // Send the response back to the client
             } else {
                 HttpResponse response = new HttpResponse();
                 response.setStatusCode(404);
                 response.setStatusText("Handler Not Found");
-                sendResponse(out, response);
+                Utilities.sendResponse(out, response);
             }
         } catch (IOException e) {
             e.printStackTrace();
