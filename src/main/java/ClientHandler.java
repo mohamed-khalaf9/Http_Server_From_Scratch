@@ -54,8 +54,21 @@ public class ClientHandler implements  Runnable{
 
                 HeadersDetector detector = new HeadersDetector();
                 keepAlive = detector.isPersistantConnection(request.getHeaders());
+
+                if(!keepAlive)
+                {
+                    while(activeRequests.get() > 0){
+                        Thread.sleep(10);
+                    }
+
+                    in.close();
+                    out.close();
+                    clientSocket.close();
+                }
             }
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
