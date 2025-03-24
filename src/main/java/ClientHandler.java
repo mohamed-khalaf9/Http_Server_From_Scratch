@@ -11,7 +11,7 @@ public class ClientHandler implements  Runnable{
     private Router router;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private static final AtomicInteger activeRequests = new AtomicInteger(0);
-    private boolean keepAlive = true;
+
 
     ClientHandler(Socket socket,Router router)
     {
@@ -20,26 +20,33 @@ public class ClientHandler implements  Runnable{
     }
     @Override
     public void run() {
+        boolean keepAlive = true;
         System.out.println("Hello, world!");
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-            HttpRequest request = parseRequest(in);
-            if (request == null) {
-                HttpResponse response = new HttpResponse();
-                response.setStatusCode(404);
-                response.setStatusText("Bad Request");
-                sendResponse(out, response);
-                return;
+            while(keepAlive){
+
+                HttpRequest request = parseRequest(in);
+                if (request == null) {
+                    HttpResponse response = new HttpResponse();
+                    response.setStatusCode(404);
+                    response.setStatusText("Bad Request");
+                    sendResponse(out, response);
+                    return;
+
+                }
+                System.out.println("Received Request: " + request.toString());
+
+                synchronized (activeRequests)
+                {
+                    activeRequests.incrementAndGet();
+                }
+
+                HeadersDetector detector = new HeadersDetector();
+                keepAlive = detector.isPersistantConnection(request.getHeaders());
             }
-
-            System.out.println("Received Request: " + request.toString());
-
-
-
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
