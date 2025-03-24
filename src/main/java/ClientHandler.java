@@ -42,7 +42,7 @@ public class ClientHandler implements  Runnable{
                     HttpResponse response = new HttpResponse();
                     response.setStatusCode(404);
                     response.setStatusText("Bad Request");
-                    sendResponse(out, response);
+                    Utilities.sendResponse(out, response);
                     return;
 
                 }
@@ -134,10 +134,6 @@ public class ClientHandler implements  Runnable{
     }
 
 
-    private void sendResponse(BufferedWriter out, HttpResponse response) throws IOException {
-        out.write(response.getRawResponse());
-        out.newLine();
-    }
 
     }
 
