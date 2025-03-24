@@ -184,7 +184,8 @@ public class Handlers {
            response.setStatusText("OK");
            response.setBody("Content added successfully");
            ETagManager eTagManager = ETagManager.getInstance();
-           String etag = eTagManager.generateEtag(fileName);
+           eTagManager.updateETag(fileName);
+           String etag = eTagManager.getFileEtag(fileName);
            response.addHeader("ETag",etag);
            return response;
 
@@ -194,6 +195,8 @@ public class Handlers {
            response.setStatusText("Internal Server Error");
            response.setBody("Internal Server Error");
            return response;
+       } catch (NoSuchAlgorithmException e) {
+           throw new RuntimeException(e);
        }
 
     }
