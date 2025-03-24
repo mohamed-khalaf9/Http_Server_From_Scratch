@@ -11,10 +11,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ETagManager {
     private final Map<String, String> fileEtags;
+    private static volatile ETagManager instance;
 
-    public ETagManager() {
+    private ETagManager() {
         fileEtags = new ConcurrentHashMap<>();
+
     }
+    public static ETagManager getInstance() {
+        if (instance == null) {
+            synchronized (ETagManager.class) {
+                if (instance == null) {
+                    instance = new ETagManager();
+                }
+            }
+        }
+        return instance;
+    }
+
 
     public synchronized String generateEtag(String filePath) {
         try {
