@@ -57,7 +57,7 @@ public class Handlers {
         }
 
     }
-    public synchronized HttpResponse getFileHandler(HttpRequest request) {
+    public synchronized HttpResponse getFileHandler(HttpRequest request) throws IOException, NoSuchAlgorithmException {
         HttpResponse response = new HttpResponse();
         ETagManager eTagManager = ETagManager.getInstance();
         HeadersDetector detector = new HeadersDetector();
