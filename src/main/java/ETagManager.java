@@ -49,15 +49,9 @@ public class ETagManager {
     }
 
 
-    public synchronized boolean compare(String filePath,String etag) {
-        try {
-            String currentEtag = this.generateETag(filePath);
-            return currentEtag.equals(etag);
-        }
-        catch (Exception c)
-        {
-            return false;
-        }
+    public synchronized boolean compare(String fileName,String etag) throws IOException, NoSuchAlgorithmException {
+        String currentETag = generateETag(fileName); // Generate fresh ETag from file content
+        return currentETag != null && currentETag.equals(etag);
     }
     public synchronized String getFileEtag(String fileName) {
         return fileEtags.get(fileName);
