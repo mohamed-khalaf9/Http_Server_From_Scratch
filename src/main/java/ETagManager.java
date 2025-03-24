@@ -28,7 +28,7 @@ public class ETagManager {
     }
 
 
-    public synchronized String generateETag(String fileName) throws IOException, NoSuchAlgorithmException {
+    private synchronized String generateETag(String fileName) throws IOException, NoSuchAlgorithmException {
         Path filePath = Path.of(fileName);
         if (!Files.exists(filePath)) {
             throw new IOException("File not found: " + fileName);
@@ -42,6 +42,10 @@ public class ETagManager {
     public synchronized void  createFileETag(String fileName) throws IOException, NoSuchAlgorithmException {
         String etag = generateETag(fileName);
         fileEtags.put(fileName.toString(), etag);
+    }
+    public void updateETag(String fileName) throws IOException, NoSuchAlgorithmException {
+        String newEtag = generateETag(fileName);
+        fileEtags.put(fileName, newEtag);
     }
 
 
