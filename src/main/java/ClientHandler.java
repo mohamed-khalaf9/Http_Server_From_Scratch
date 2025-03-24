@@ -34,22 +34,7 @@ public class ClientHandler implements  Runnable{
             System.out.println("Received Request: " + request.toString());
 
 
-            Function<HttpRequest, HttpResponse> handler = router.getHandler(request.getMethod(), request.getTarget());
 
-            try {
-                if (handler != null) {
-                    HttpResponse response = handler.apply(request);
-                    sendResponse(out, response); // Send the response back to the client
-                } else {
-                    HttpResponse response = new HttpResponse();
-                    response.setStatusCode(404);
-                    response.setStatusText("Handler Not Found");
-                    sendResponse(out, response);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
 
 
         } catch (IOException e) {
