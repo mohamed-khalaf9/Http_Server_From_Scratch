@@ -39,6 +39,11 @@ public class ETagManager {
         byte[] hash = digest.digest(fileContent);
         return Base64.getEncoder().encodeToString(hash);
     }
+    public synchronized void  createFileETag(String fileName) throws IOException, NoSuchAlgorithmException {
+        String etag = generateETag(fileName);
+        fileEtags.put(fileName.toString(), etag);
+    }
+
 
     public synchronized boolean compare(String filePath,String etag) {
         try {
@@ -50,8 +55,8 @@ public class ETagManager {
             return false;
         }
     }
-    public synchronized String getFileEtag(String filePath) {
-        return fileEtags.get(filePath);
+    public synchronized String getFileEtag(String fileName) {
+        return fileEtags.get(fileName);
     }
 
 }
