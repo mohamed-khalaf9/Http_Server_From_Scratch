@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public class Handlers {
@@ -137,8 +138,7 @@ public class Handlers {
 
         response.setStatusCode(isRangeRequest ? 206 : 200);
         response.setStatusText(isRangeRequest ? "Partial Content" : "OK");
-        String body = Base64.getEncoder().encodeToString(fileContent);
-        response.setBody(body);
+        response.setBody(new String(fileContent, StandardCharsets.UTF_8)); // For text files
         response.addHeader("Content-Length", String.valueOf(fileContent.length));
         response.addHeader("ETag", eTagManager.getFileEtag(fileName));
 
@@ -147,25 +147,22 @@ public class Handlers {
     }
     public synchronized HttpResponse updateFileHandler(HttpRequest request)  {
        HttpResponse response = new HttpResponse();
+       String fileName="";
+       String fileContent= request.getBody();
 
-       String pathParametar = request.getPathParametar().trim();
-       String[] pathParametarParts = pathParametar.split("/");
-       String fileNameAndContent = pathParametarParts[2];
-       String[] fileNameAndContentParts = fileNameAndContent.split(":",2);
-       if(fileNameAndContentParts.length != 2)
-       {
+       fileName = request.getPathParametar().trim();
+       if (fileName.isEmpty()) {
            response.setStatusCode(400);
            response.setStatusText("Bad Request");
-           response.setBody("Bad Request");
+           response.setBody("File name is missing");
            return response;
        }
-       String fileName = fileNameAndContentParts[0];
-       String fileContent = fileNameAndContentParts[1];
-       if(!fileName.isEmpty() || !fileContent.isEmpty())
+       if(fileContent.isEmpty())
        {
            response.setStatusCode(400);
            response.setStatusText("Bad Request");
-           response.setBody("Bad Request");
+           response.setBody("Content to be added is missing");
+           return response;
        }
        File file = new File(fileName);
        if(!file.exists())
@@ -177,6 +174,7 @@ public class Handlers {
        }
        try(FileWriter fw = new FileWriter(fileName,true);)
        {
+           fw.write("\n");
            fw.write(fileContent);
            response.setStatusCode(200);
            response.setStatusText("OK");
