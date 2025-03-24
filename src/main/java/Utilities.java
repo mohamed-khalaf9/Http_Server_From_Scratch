@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.IOException;
+
 public class Utilities {
     public static long[] parseRange(String rangeHeader, long fileSize) {
         if (rangeHeader == null || !rangeHeader.startsWith("bytes=")) {
@@ -24,6 +27,15 @@ public class Utilities {
             return new long[]{0, 0};
         }
     }
+
+    private static void sendResponse(BufferedWriter out, HttpResponse response) throws IOException {
+        synchronized (out){
+            out.write(response.getRawResponse());
+            out.newLine();
+        }
+
+    }
+
 
 
 
