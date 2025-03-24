@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class Handlers {
@@ -29,7 +30,8 @@ public class Handlers {
             {
 
 
-                String etag = eTagManager.generateEtag(fileName);
+                eTagManager.createFileETag(fileName);
+                String etag = eTagManager.getFileEtag(fileName);
                 response.setStatusCode(201);
                 response.setStatusText("Created");
                 response.setBody("File Created");
@@ -50,6 +52,8 @@ public class Handlers {
             response.setStatusText("Internal Server Error");
             response.setBody("Failed to Create File");
             return response;
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
 
     }
