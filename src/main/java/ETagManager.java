@@ -43,7 +43,7 @@ public class ETagManager {
         String etag = generateETag(fileName);
         fileEtags.put(fileName.toString(), etag);
     }
-    public void updateETag(String fileName) throws IOException, NoSuchAlgorithmException {
+    public synchronized void updateETag(String fileName) throws IOException, NoSuchAlgorithmException {
         String newEtag = generateETag(fileName);
         fileEtags.put(fileName, newEtag);
     }
