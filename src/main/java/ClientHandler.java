@@ -14,6 +14,7 @@ public class ClientHandler implements  Runnable{
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private static final AtomicInteger activeRequests = new AtomicInteger(0);
     private ExecutorService executor;
+    private long requestArrivalTime;
 
 
     ClientHandler(Socket socket,Router router)
