@@ -21,11 +21,12 @@ public class HttpRequest {
         this.setVersion("");
         this.setBody("");
     }
-    public HttpRequest(String method, String target, Map<String, String> headers, String pathParametar) {
+    public HttpRequest(String method, String target, Map<String, String> headers, String pathParametar,String body) {
         this.method = method;
         this.target = target;
         this.headers = headers;
         this.pathParametar = pathParametar;
+        this.body = body;
 
     }
 
