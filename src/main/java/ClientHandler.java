@@ -11,6 +11,7 @@ public class ClientHandler implements  Runnable{
     private Router router;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private static final AtomicInteger activeRequests = new AtomicInteger(0);
+    private boolean keepAlive = true;
 
     ClientHandler(Socket socket,Router router)
     {
