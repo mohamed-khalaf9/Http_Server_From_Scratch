@@ -8,7 +8,8 @@ public class Handlers {
 
     public synchronized HttpResponse createFileHandler(HttpRequest request)  {
         HttpResponse response = new HttpResponse();
-        ETagManager etagManager = new ETagManager();
+        ETagManager eTagManager = ETagManager.getInstance();
+
 
 
 
@@ -26,7 +27,8 @@ public class Handlers {
             if(file.createNewFile())
             {
 
-                String etag = etagManager.generateEtag(fileName);
+
+                String etag = eTagManager.generateEtag(fileName);
                 response.setStatusCode(201);
                 response.setStatusText("Created");
                 response.setBody("File Created");
@@ -38,7 +40,7 @@ public class Handlers {
                 response.setStatusCode(409);
                 response.setStatusText("Conflict");
                 response.setBody("File Already Exists");
-                response.addHeader("ETag",etagManager.getFileEtag(fileName));
+                response.addHeader("ETag",eTagManager.getFileEtag(fileName));
                 return response;
             }
         }
@@ -52,7 +54,7 @@ public class Handlers {
     }
     public synchronized HttpResponse getFileHandler(HttpRequest request) {
         HttpResponse response = new HttpResponse();
-        ETagManager etagManager = new ETagManager();
+        ETagManager eTagManager = ETagManager.getInstance();
         HeadersDetector detector = new HeadersDetector();
         RangeRequestHandler rangeHandler = new RangeRequestHandler();
 
@@ -76,12 +78,12 @@ public class Handlers {
 
         boolean ifNonMatchHeaderExist = detector.detectIfNoneMatch(request.getHeaders());
         if (ifNonMatchHeaderExist) {
-            boolean ifMatch = etagManager.compare(fileName, request.getHeaders().get("If-None-Match"));
+            boolean ifMatch = eTagManager.compare(fileName, request.getHeaders().get("If-None-Match"));
             if (ifMatch) {
                 response.setStatusCode(304);
                 response.setStatusText("Not Modified");
                 response.setBody("Not Modified");
-                response.addHeader("ETag", etagManager.getFileEtag(fileName));
+                response.addHeader("ETag", eTagManager.getFileEtag(fileName));
                 return response;
             }
         }
@@ -138,7 +140,7 @@ public class Handlers {
         String body = Base64.getEncoder().encodeToString(fileContent);
         response.setBody(body);
         response.addHeader("Content-Length", String.valueOf(fileContent.length));
-        response.addHeader("ETag", etagManager.getFileEtag(fileName));
+        response.addHeader("ETag", eTagManager.getFileEtag(fileName));
 
         return response;
 
@@ -179,8 +181,8 @@ public class Handlers {
            response.setStatusCode(200);
            response.setStatusText("OK");
            response.setBody("Content added successfully");
-           ETagManager etagManager = new ETagManager();
-           String etag = etagManager.generateEtag(fileName);
+           ETagManager eTagManager = ETagManager.getInstance();
+           String etag = eTagManager.generateEtag(fileName);
            response.addHeader("ETag",etag);
            return response;
 
