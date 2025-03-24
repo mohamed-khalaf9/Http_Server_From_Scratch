@@ -17,15 +17,12 @@ public class ETagManager {
         fileEtags = new ConcurrentHashMap<>();
 
     }
-    public static ETagManager getInstance() {
-        if (instance == null) {
-            synchronized (ETagManager.class) {
-                if (instance == null) {
-                    instance = new ETagManager();
-                }
-            }
+    public static synchronized ETagManager getInstance() {
+        if(instance == null) {
+            instance = new ETagManager();
         }
         return instance;
+
     }
 
 
