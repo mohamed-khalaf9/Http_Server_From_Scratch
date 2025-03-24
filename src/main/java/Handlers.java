@@ -30,8 +30,9 @@ public class Handlers {
             {
 
 
-                eTagManager.createFileETag(fileName);
-                String etag = eTagManager.getFileEtag(fileName);
+
+
+                String etag = eTagManager.generateETag(fileName);
                 response.setStatusCode(201);
                 response.setStatusText("Created");
                 response.setBody("File Created");
@@ -52,8 +53,6 @@ public class Handlers {
             response.setStatusText("Internal Server Error");
             response.setBody("Failed to Create File");
             return response;
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
 
     }
@@ -83,7 +82,7 @@ public class Handlers {
 
         boolean ifNonMatchHeaderExist = detector.detectIfNoneMatch(request.getHeaders());
         if (ifNonMatchHeaderExist) {
-            boolean ifMatch = eTagManager.compare(fileName, request.getHeaders().get("If-None-Match"));
+            boolean ifMatch = eTagManager.compare(fileName, request.getHeaders().get("If-None-Match").trim());
             if (ifMatch) {
                 response.setStatusCode(304);
                 response.setStatusText("Not Modified");
@@ -144,13 +143,14 @@ public class Handlers {
         response.setStatusText(isRangeRequest ? "Partial Content" : "OK");
         response.setBody(new String(fileContent, StandardCharsets.UTF_8)); // For text files
         response.addHeader("Content-Length", String.valueOf(fileContent.length));
-        response.addHeader("ETag", eTagManager.getFileEtag(fileName));
+        response.addHeader("ETag", eTagManager.generateETag(fileName));
 
         return response;
 
     }
     public synchronized HttpResponse updateFileHandler(HttpRequest request)  {
        HttpResponse response = new HttpResponse();
+        ETagManager eTagManager = ETagManager.getInstance();
        String fileName="";
        String fileContent= request.getBody();
 
@@ -180,12 +180,12 @@ public class Handlers {
        {
            fw.write("\n");
            fw.write(fileContent);
+           fw.flush();
+           fw.close();
            response.setStatusCode(200);
            response.setStatusText("OK");
            response.setBody("Content added successfully");
-           ETagManager eTagManager = ETagManager.getInstance();
-           eTagManager.updateETag(fileName);
-           String etag = eTagManager.getFileEtag(fileName);
+           String etag = eTagManager.generateETag(fileName);
            response.addHeader("ETag",etag);
            return response;
 
@@ -195,8 +195,6 @@ public class Handlers {
            response.setStatusText("Internal Server Error");
            response.setBody("Internal Server Error");
            return response;
-       } catch (NoSuchAlgorithmException e) {
-           throw new RuntimeException(e);
        }
 
     }
