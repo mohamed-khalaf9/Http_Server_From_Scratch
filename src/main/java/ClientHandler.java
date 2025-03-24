@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -26,6 +27,11 @@ public class ClientHandler implements  Runnable{
     }
     @Override
     public void run() {
+        try {
+            clientSocket.setSoTimeout(60000);
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
         boolean keepAlive = true;
         System.out.println("Hello, world!");
 
