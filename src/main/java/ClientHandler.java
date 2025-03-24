@@ -3,6 +3,8 @@ import java.net.Socket;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -11,12 +13,15 @@ public class ClientHandler implements  Runnable{
     private Router router;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private static final AtomicInteger activeRequests = new AtomicInteger(0);
+    private ExecutorService executor;
 
 
     ClientHandler(Socket socket,Router router)
     {
         this.clientSocket = socket;
         this.router = router;
+        executor = Executors.newCachedThreadPool();
+
     }
     @Override
     public void run() {
@@ -43,6 +48,9 @@ public class ClientHandler implements  Runnable{
                 {
                     activeRequests.incrementAndGet();
                 }
+
+
+
 
                 HeadersDetector detector = new HeadersDetector();
                 keepAlive = detector.isPersistantConnection(request.getHeaders());
