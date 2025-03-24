@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ETagManager {
     private final Map<String, String> fileEtags;
-    private static volatile ETagManager instance;
+    private static  ETagManager instance;
 
     private ETagManager() {
         fileEtags = new ConcurrentHashMap<>();
