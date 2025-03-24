@@ -23,7 +23,7 @@ public class HeadersDetector {
             String headerValue = headers.get("If-None-Match");
             headerValue = headerValue.strip();
             int size = headerValue.length();
-            if(size>1 && headerValue.charAt(size-1)=='"' && headerValue.charAt(size-1)=='"')
+            if(size>1)
                 return true;
         }
         return false;
