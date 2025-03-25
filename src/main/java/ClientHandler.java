@@ -50,6 +50,8 @@ public class ClientHandler implements  Runnable{
                 }
                 System.out.println("Received Request: " + request.toString());
 
+                executor.execute(new RequestHandler(request,new HttpRequestLog(),this.router,this,out));
+
                 synchronized (activeRequests)
                 {
                     activeRequests.incrementAndGet();
