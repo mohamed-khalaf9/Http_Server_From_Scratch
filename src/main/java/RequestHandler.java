@@ -30,13 +30,21 @@ public class RequestHandler implements Runnable{
         try {
             if (handler != null) {
                 HttpResponse response = handler.apply(request);
-                Utilities.sendResponse(out, response); // Send the response back to the client
+                Utilities.sendResponse(out, response);// Send the response back to the client
+
+
             } else {
                 HttpResponse response = new HttpResponse();
                 response.setStatusCode(404);
                 response.setStatusText("Handler Not Found");
                 Utilities.sendResponse(out, response);
             }
+
+            synchronized (clientHandler.activeRequests)
+            {
+                clientHandler.activeRequests.decrementAndGet();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
