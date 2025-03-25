@@ -14,7 +14,7 @@ public class ClientHandler implements  Runnable{
     private Socket clientSocket;
     private Router router;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
-    private static final AtomicInteger activeRequests = new AtomicInteger(0);
+    public  final AtomicInteger activeRequests = new AtomicInteger(0);
     private ExecutorService executor;
     private long requestArrivalTime;
 
@@ -26,6 +26,8 @@ public class ClientHandler implements  Runnable{
         executor = Executors.newCachedThreadPool();
 
     }
+
+
     @Override
     public void run() {
         boolean keepAlive = true;
