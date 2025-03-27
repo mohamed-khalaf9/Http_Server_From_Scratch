@@ -57,19 +57,15 @@ public class HttpResponse {
     public String getRawResponse(){
 
             StringBuilder response = new StringBuilder();
-
-            // ✅ Proper HTTP Response Line
+            // write response line
             response.append(version).append(" ").append(statusCode).append(" ").append(statusText).append("\r\n");
-
-            // ✅ Properly formatted headers
+            // write headers
             for (Map.Entry<String, String> header : headers.entrySet()) {
                 response.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
             }
 
-            // ✅ One blank line after headers
             response.append("\r\n");
 
-            // ✅ Body (if exists)
             if (body != null) {
                 response.append(body);
             }
