@@ -10,6 +10,15 @@ public class Logger {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 
+    public static synchronized void logRequest(HttpRequestLog requestLog) {
+        writeLogToFile(requestLog);
+    }
+
+    public static synchronized void logResponse(HttpResponseLog responseLog) {
+        writeLogToFile(responseLog);
+    }
+
+
 
 
 
