@@ -20,4 +20,27 @@ public class HttpResponseLog {
 
     }
 
+    public String getResponseId() {
+        return responseId;
+    }
+
+    public int getResoureceSize() {
+        return resoureceSize;
+    }
+
+    public HttpResponse getHttpResponse() {
+        return httpResponse;
+    }
+
+    public long getProcessingTime() {
+        return processingTime;
+    }
+
+    public String getClientIpAddresse() {
+        return clientIpAddresse;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
 }
