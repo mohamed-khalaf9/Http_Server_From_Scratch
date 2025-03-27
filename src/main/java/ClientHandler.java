@@ -27,14 +27,15 @@ public class ClientHandler implements  Runnable{
         BufferedWriter out = null;
         boolean keepAlive = true;
         RateLimiter rateLimiter = HttpServer.IP_RATE_LIMITER_MAP.get(clientIpAddresse);
-        Logger logger = new Logger(); // Initialize Logger
+        Logger logger = new Logger();
 
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
             while (keepAlive) {
-                clientSocket.setSoTimeout(60000);
+                clientSocket.setSoTimeout(60000); // timout for client connection
+
                 HttpRequest request = parseRequest(in);
                 HttpRequestLog requestLog = new HttpRequestLog(request, this.clientIpAddresse, this.requestArrivalTime);
                 HttpResponse response;
@@ -66,7 +67,7 @@ public class ClientHandler implements  Runnable{
                     }
                 }
 
-                // Send response
+
                 Utilities.sendResponse(out, response);
 
                 // Log both request and response together
@@ -75,7 +76,7 @@ public class ClientHandler implements  Runnable{
                 HttpResponseLog responseLog = new HttpResponseLog(requestLog.getRequestId(), this.clientIpAddresse, processingTime, response);
                 logger.logRequestAndResponse(requestLog, responseLog);
 
-                // Check if connection should remain open
+                // update keep-alive value
                 HeadersDetector detector = new HeadersDetector();
                 keepAlive = detector.isPersistantConnection(request.getHeaders());
             }
