@@ -7,15 +7,16 @@ import java.util.function.Function;
 public class ClientHandler implements  Runnable{
     private Socket clientSocket;
     private Router router;
+    private String clientIpAddresse;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private long requestArrivalTime;
-    private static final Map<InetAddress,RateLimiter> IP_RATE_LIMITER_MAP = new HashMap<>();
 
 
-    ClientHandler(Socket socket,Router router)
+    ClientHandler(Socket socket,Router router,String clientIpAddresse)
     {
         this.clientSocket = socket;
         this.router = router;
+        this.clientIpAddresse = clientIpAddresse;
 
 
     }
@@ -26,6 +27,7 @@ public class ClientHandler implements  Runnable{
         BufferedReader in=null;
         BufferedWriter out=null;
         boolean keepAlive = true;
+
         System.out.println("Hello, world!");
 
         try {
