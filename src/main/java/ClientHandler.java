@@ -82,6 +82,10 @@ public class ClientHandler implements  Runnable{
         }
 
         try {
+            HttpResponse response = new HttpResponse();
+            response.setStatusCode(500);
+            response.setStatusText("Connection  closed");
+            Utilities.sendResponse(out, response);
             in.close();
             out.close();
             clientSocket.close();
