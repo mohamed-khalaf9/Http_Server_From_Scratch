@@ -2,9 +2,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +17,7 @@ public class Logger {
     }
 
 
-    public static synchronized void logRequestAndResponse(Object requestLog, Object responseLog) {
+    public static synchronized void logRequestAndResponse(HttpRequestLog requestLog, HttpResponseLog responseLog) {
         List<Object> logs = new ArrayList<>();
 
         // Read existing logs if the file exists
@@ -36,10 +33,23 @@ public class Logger {
             }
         }
 
-        // Create a single log entry containing both request and response
+        // Convert timestamps to readable format using Utilities
         Map<String, Object> logEntry = new HashMap<>();
-        logEntry.put("request", requestLog);
-        logEntry.put("response", responseLog);
+        logEntry.put("request", Map.of(
+                "requestId", requestLog.getRequestId(),
+                "ipAddress", requestLog.getIpAddresse(),
+                "timestamp", Utilities.formatTimestamp(requestLog.getTimestamp()),  // Use Utilities
+                "httpRequest", requestLog.getHttpRequest()
+        ));
+
+        logEntry.put("response", Map.of(
+                "responseId", responseLog.getResponseId(),
+                "requestId", responseLog.getRequestId(),
+                "clientIpAddress", responseLog.getClientIpAddresse(),
+                "processingTime", Utilities.formatProcessingTime(responseLog.getProcessingTime()),  // Use Utilities
+                "httpResponse", responseLog.getHttpResponse(),
+                "resourceSize", responseLog.getResoureceSize()
+        ));
 
         // Append the new log entry
         logs.add(logEntry);
@@ -51,6 +61,7 @@ public class Logger {
             e.printStackTrace();
         }
     }
+
 }
 
 
