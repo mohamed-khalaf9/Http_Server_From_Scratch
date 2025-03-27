@@ -1,21 +1,12 @@
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 public class ClientHandler implements  Runnable{
     private Socket clientSocket;
     private Router router;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
-    public  final AtomicInteger activeRequests = new AtomicInteger(0);
-    private ExecutorService executor;
     private long requestArrivalTime;
 
 
@@ -23,69 +14,94 @@ public class ClientHandler implements  Runnable{
     {
         this.clientSocket = socket;
         this.router = router;
-        executor = Executors.newCachedThreadPool();
+
 
     }
 
 
     @Override
     public void run() {
+        BufferedReader in=null;
+        BufferedWriter out=null;
         boolean keepAlive = true;
         System.out.println("Hello, world!");
 
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
-            clientSocket.setSoTimeout(60000);
+        try {
 
-            while(keepAlive){
+            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+
+
+            while (keepAlive) {
+                clientSocket.setSoTimeout(60000);
+
 
                 HttpRequest request = parseRequest(in);
                 if (request == null) {
                     HttpResponse response = new HttpResponse();
                     response.setStatusCode(404);
                     response.setStatusText("Bad Request");
+                    response.setBody("No request found");
                     Utilities.sendResponse(out, response);
-                    return;
+                    keepAlive = false;
+                    break;
 
                 }
                 System.out.println("Received Request: " + request.toString());
 
-                executor.execute(new RequestHandler(request,new HttpRequestLog(),this.router,this,out));
+                Function<HttpRequest, HttpResponse> handler = router.getHandler(request.getMethod(), request.getTarget());
+                try {
+                    if (handler != null) {
+                        HttpResponse response = handler.apply(request);
+                        Utilities.sendResponse(out, response);// Send the response back to the client
 
-                synchronized (activeRequests)
-                {
-                    activeRequests.incrementAndGet();
+
+                    } else {
+                        HttpResponse response = new HttpResponse();
+                        response.setStatusCode(404);
+                        response.setStatusText("Handler Not Found");
+                        Utilities.sendResponse(out, response);
+                    }
+
+
+
+                } catch (IOException e) {
+                    System.out.println("error in request handler: "+e.getMessage());
                 }
-
-
 
 
                 HeadersDetector detector = new HeadersDetector();
                 keepAlive = detector.isPersistantConnection(request.getHeaders());
 
-                if(!keepAlive)
-                {
-                    while(activeRequests.get() > 0){
-                        Thread.sleep(10);
-                    }
 
-                    in.close();
-                    out.close();
-                    clientSocket.close();
-                }
             }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
 
-    public HttpRequest parseRequest(BufferedReader bufferedReader) throws IOException {
-        // Read request line
-        String requestLine = bufferedReader.readLine();
-        if (requestLine == null || requestLine.isEmpty()) {
-            throw new IOException("Empty request line");
+        try {
+            in.close();
+            out.close();
+            clientSocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        requestArrivalTime = System.currentTimeMillis();
+
+
+
+        }
+
+
+
+
+
+    public HttpRequest parseRequest(BufferedReader bufferedReader) throws IOException, InterruptedException {
+        String requestLine = bufferedReader.readLine();
+        if(requestLine == null)
+            return null;
+        this.requestArrivalTime = System.currentTimeMillis();
 
         // Split method, target, version
         String[] requestLineParts = requestLine.split(" ", 3);
@@ -140,6 +156,7 @@ public class ClientHandler implements  Runnable{
 
 
     }
+
 
 
 
