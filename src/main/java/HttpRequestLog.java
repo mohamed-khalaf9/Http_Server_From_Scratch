@@ -19,4 +19,16 @@ public class HttpRequestLog {
     public String getRequestId() {
         return requestId;
     }
+
+    public String getIpAddresse() {
+        return ipAddresse;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public HttpRequest getHttpRequest() {
+        return httpRequest;
+    }
 }
