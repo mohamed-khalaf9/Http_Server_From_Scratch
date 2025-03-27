@@ -3,9 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.ECField;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -35,7 +33,7 @@ public class ETagManager {
 
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
 
-            // Read file in chunks to avoid memory issues
+            // Read file in chunks
             try (InputStream fis = new BufferedInputStream(Files.newInputStream(filePath))) {
                 byte[] buffer = new byte[8192]; // 8KB buffer
                 int bytesRead;
@@ -44,7 +42,7 @@ public class ETagManager {
                 }
             }
 
-            // Get hash and encode to Base64 (without padding for consistency)
+
             byte[] hash = digest.digest();
             String etag= Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
             fileEtags.put(fileName,etag);
@@ -59,7 +57,7 @@ public class ETagManager {
 
 
     public synchronized boolean compare(String fileName,String etag) throws IOException{
-        String currentETag = generateETag(fileName); // Generate fresh ETag from file content
+        String currentETag = generateETag(fileName);
         return currentETag != null && currentETag.equals(etag);
     }
     public synchronized String getFileEtag(String fileName) {
