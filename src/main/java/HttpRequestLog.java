@@ -12,7 +12,11 @@ public class HttpRequestLog {
         this.timestamp = timestamp;
         this.httpRequest = httpRequest;
     }
+    public HttpRequestLog() {
 
+    }
 
-
+    public String getRequestId() {
+        return requestId;
+    }
 }
