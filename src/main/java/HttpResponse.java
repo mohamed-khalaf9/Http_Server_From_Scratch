@@ -13,7 +13,7 @@ public class HttpResponse {
 
     public HttpResponse()
     {
-        this.setVersion("Http1.1");
+        this.setVersion("HTTP/1.1");
         this.headers = new HashMap<String, String>();
     }
 
@@ -56,13 +56,29 @@ public class HttpResponse {
         this.body = body;
     }
     public String getRawResponse(){
-        StringBuilder response = new StringBuilder();
-        response.append("HTTP/1.1 ").append(statusCode).append(" ").append(statusText).append("\r\n");
-        for(Map.Entry<String, String> header : headers.entrySet()){
-            response.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
-        }
-        if(body != null) response.append(body);
-        return response.toString();
+
+            StringBuilder response = new StringBuilder();
+
+            // ✅ Proper HTTP Response Line
+            response.append(version).append(" ").append(statusCode).append(" ").append(statusText).append("\r\n");
+
+            // ✅ Properly formatted headers
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                response.append(header.getKey()).append(": ").append(header.getValue()).append("\r\n");
+            }
+
+            // ✅ One blank line after headers
+            response.append("\r\n");
+
+            // ✅ Body (if exists)
+            if (body != null) {
+                response.append(body);
+            }
+
+            return response.toString();
+
+
+
     }
 
 }
