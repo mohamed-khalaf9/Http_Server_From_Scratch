@@ -27,6 +27,7 @@ public class ClientHandler implements  Runnable{
         BufferedReader in=null;
         BufferedWriter out=null;
         boolean keepAlive = true;
+        RateLimiter rateLimiter = HttpServer.IP_RATE_LIMITER_MAP.get(clientIpAddresse);
 
         System.out.println("Hello, world!");
 
@@ -50,6 +51,15 @@ public class ClientHandler implements  Runnable{
                     keepAlive = false;
                     break;
 
+                }
+                if(!rateLimiter.allowRequest(requestArrivalTime))
+                {
+                    HttpResponse response = new HttpResponse();
+                    response.setStatusCode(429);
+                    response.setStatusText("Too Many Requests");
+                    response.setBody("Too Many Requests");
+                    Utilities.sendResponse(out, response);
+                    break;
                 }
                 System.out.println("Received Request: " + request.toString());
 
