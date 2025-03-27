@@ -18,7 +18,7 @@ public class Router {
     public Function<HttpRequest, HttpResponse> getHandler(String method, String target) {
         Map<String, Function<HttpRequest, HttpResponse>> handlers = routes.get(method);
         if (handlers != null) {
-            return handlers.get(target); // Returns null if not found
+            return handlers.get(target);
         }
         return null;
     }
