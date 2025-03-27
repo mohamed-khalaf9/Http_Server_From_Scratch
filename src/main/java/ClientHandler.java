@@ -108,25 +108,26 @@ public class ClientHandler implements  Runnable{
         String requestLine = bufferedReader.readLine();
         if(requestLine == null)
             return null;
+
+        // log actual arrival time of the request
         this.requestArrivalTime = System.currentTimeMillis();
 
-        // Split method, target, version
+        // fetch method, target and version
         String[] requestLineParts = requestLine.split(" ", 3);
         if (requestLineParts.length < 3) {
             throw new IOException("Invalid request line");
         }
         String method = requestLineParts[0];
-
         String target = requestLineParts[1];
         String[] targetParts = target.split("/");
+        String requestTarget = "/"+targetParts[1]; // example: /create/fileName so requestTarget = /create
+        String pathParameter = targetParts[2];// pathParameter = fileName
 
-        String requestTarget = "/"+targetParts[1];// e.g., "/create/example.txt"
-        String pathParameter = targetParts[2];
-
-        // Read headers (ignore body)
+        // there is an empty line between headers and body so keep parsing untill reach this empty line
         Map<String, String> headers = new HashMap<>();
         String headerLine;
         while ((headerLine = bufferedReader.readLine()) != null && !headerLine.isEmpty()) {
+            // parse the corrected written headers
             int colonIdx = headerLine.indexOf(':');
             if (colonIdx != -1) {
                 String key = headerLine.substring(0, colonIdx).trim();
@@ -135,7 +136,7 @@ public class ClientHandler implements  Runnable{
             }
         }
 
-        // Extract the path parameter (e.g., "example.txt")
+        // parse the body using content length header value
         String body = null;
         if (headers.containsKey("Content-Length")) {
             int contentLength = Integer.parseInt(headers.get("Content-Length").trim());
