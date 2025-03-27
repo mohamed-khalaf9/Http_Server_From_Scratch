@@ -16,5 +16,8 @@ public class HttpResponseLog {
         this.httpResponse = httpResponse;
         this.resoureceSize = httpResponse.getBody() != null ? httpResponse.getBody().length():0;
     }
+    public HttpResponseLog(){
+
+    }
 
 }
