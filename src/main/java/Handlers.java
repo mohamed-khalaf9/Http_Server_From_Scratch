@@ -116,7 +116,7 @@ public class Handlers {
         }
 
         if (!isRangeRequest) {
-            try (FileInputStream fis = new FileInputStream(file)) {
+            try (FileInputStream fis = new FileInputStream(file)) { // can we make it bufferd?
                 fileContent = fis.readAllBytes();
             } catch (IOException e) {
                 response.setStatusCode(500);
