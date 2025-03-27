@@ -11,7 +11,7 @@ public class HttpServer {
     public int port;
     public ServerSocket serverSocket;
     public Router router;
-    private static final Map<String,RateLimiter> IP_RATE_LIMITER_MAP = new HashMap<>();
+    public static final Map<String,RateLimiter> IP_RATE_LIMITER_MAP = new HashMap<>();
 
 
     public HttpServer(int port,Router router) {
