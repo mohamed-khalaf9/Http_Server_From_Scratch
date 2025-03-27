@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.*;
 import java.util.function.Function;
@@ -8,6 +9,7 @@ public class ClientHandler implements  Runnable{
     private Router router;
     private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private long requestArrivalTime;
+    private static final Map<InetAddress,RateLimiter> IP_RATE_LIMITER_MAP = new HashMap<>();
 
 
     ClientHandler(Socket socket,Router router)
