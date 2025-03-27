@@ -22,95 +22,83 @@ public class ClientHandler implements  Runnable{
     }
 
 
-    @Override
     public void run() {
-        BufferedReader in=null;
-        BufferedWriter out=null;
+        BufferedReader in = null;
+        BufferedWriter out = null;
         boolean keepAlive = true;
         RateLimiter rateLimiter = HttpServer.IP_RATE_LIMITER_MAP.get(clientIpAddresse);
-
-        System.out.println("Hello, world!");
+        Logger logger = new Logger(); // Initialize Logger
 
         try {
-
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
-
             while (keepAlive) {
                 clientSocket.setSoTimeout(60000);
-
-
                 HttpRequest request = parseRequest(in);
+                HttpRequestLog requestLog = new HttpRequestLog(request, this.clientIpAddresse, this.requestArrivalTime);
+                HttpResponse response;
+
                 if (request == null) {
-                    HttpResponse response = new HttpResponse();
-                    response.setStatusCode(404);
+                    response = new HttpResponse();
+                    response.setStatusCode(400);
                     response.setStatusText("Bad Request");
                     response.setBody("No request found");
-                    Utilities.sendResponse(out, response);
                     keepAlive = false;
-                    break;
-
                 }
-                if(!rateLimiter.allowRequest(requestArrivalTime))
-                {
-                    HttpResponse response = new HttpResponse();
+                else if (!rateLimiter.allowRequest(requestArrivalTime)) {
+                    response = new HttpResponse();
                     response.setStatusCode(429);
                     response.setStatusText("Too Many Requests");
                     response.setBody("Too Many Requests");
-                    Utilities.sendResponse(out, response);
-                    break;
+                    keepAlive = false;
                 }
-                System.out.println("Received Request: " + request.toString());
+                else {
+                    System.out.println("Received Request: " + request.toString());
 
-                Function<HttpRequest, HttpResponse> handler = router.getHandler(request.getMethod(), request.getTarget());
-                try {
+                    Function<HttpRequest, HttpResponse> handler = router.getHandler(request.getMethod(), request.getTarget());
                     if (handler != null) {
-                        HttpResponse response = handler.apply(request);
-                        Utilities.sendResponse(out, response);// Send the response back to the client
-
-
+                        response = handler.apply(request);
                     } else {
-                        HttpResponse response = new HttpResponse();
+                        response = new HttpResponse();
                         response.setStatusCode(404);
                         response.setStatusText("Handler Not Found");
-                        Utilities.sendResponse(out, response);
                     }
-
-
-
-                } catch (IOException e) {
-                    System.out.println("error in request handler: "+e.getMessage());
                 }
 
+                // Send response
+                Utilities.sendResponse(out, response);
 
+                // Log both request and response together
+                long currentTime = System.currentTimeMillis();
+                long processingTime = currentTime - requestArrivalTime;
+                HttpResponseLog responseLog = new HttpResponseLog(requestLog.getRequestId(), this.clientIpAddresse, processingTime, response);
+                logger.logRequestAndResponse(requestLog, responseLog);
+
+                // Check if connection should remain open
                 HeadersDetector detector = new HeadersDetector();
                 keepAlive = detector.isPersistantConnection(request.getHeaders());
-
-
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("Error: " + e.getMessage());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (out != null) {
+                    HttpResponse response = new HttpResponse();
+                    response.setStatusCode(500);
+                    response.setStatusText("Connection Closed");
+                    Utilities.sendResponse(out, response);
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+                clientSocket.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-
-        try {
-            HttpResponse response = new HttpResponse();
-            response.setStatusCode(500);
-            response.setStatusText("Connection  closed");
-            Utilities.sendResponse(out, response);
-            in.close();
-            out.close();
-            clientSocket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-
-
-        }
-
+    }
 
 
 
