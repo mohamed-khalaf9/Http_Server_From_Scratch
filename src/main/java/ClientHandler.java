@@ -7,7 +7,6 @@ public class ClientHandler implements  Runnable{
     private Socket clientSocket;
     private Router router;
     private String clientIpAddresse;
-    private static final Set<String> METHODS_WITH_BODY = Set.of("POST", "PUT", "PATCH");
     private long requestArrivalTime;
 
 
@@ -22,6 +21,7 @@ public class ClientHandler implements  Runnable{
 
 
     public void run() {
+        System.out.println("Hello world");
         BufferedReader in = null;
         BufferedWriter out = null;
         boolean keepAlive = true;
@@ -119,8 +119,10 @@ public class ClientHandler implements  Runnable{
         String method = requestLineParts[0];
         String target = requestLineParts[1];
         String[] targetParts = target.split("/");
-        String requestTarget = "/"+targetParts[1]; // example: /create/fileName so requestTarget = /create
-        String pathParameter = targetParts[2];// pathParameter = fileName
+        String requestTarget = "/"+targetParts[1];
+        String pathParameter= null;
+        if(targetParts.length==3){// example: /create/fileName so requestTarget = /create
+         pathParameter = targetParts[2];}// pathParameter = fileName
 
         // there is an empty line between headers and body so keep parsing untill reach this empty line
         Map<String, String> headers = new HashMap<>();
