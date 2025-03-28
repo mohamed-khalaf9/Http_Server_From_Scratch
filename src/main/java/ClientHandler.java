@@ -26,7 +26,7 @@ public class ClientHandler implements  Runnable{
         BufferedWriter out = null;
         boolean keepAlive = true;
         RateLimiter rateLimiter = HttpServer.IP_RATE_LIMITER_MAP.get(clientIpAddresse);
-        Logger logger = new Logger();
+        LoggerService logger = new LoggerService();
 
         try {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
