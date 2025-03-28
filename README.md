@@ -20,7 +20,16 @@ A multi-threaded HTTP server, built from scratch in Java, efficiently handles **
 
 ### 📜 Logging & Monitoring  
 - **Log4j2 Integration**: Provides detailed logging of requests and responses, aiding in debugging, monitoring, and analytics.
+---
 
+## Future Features and Improvements
+- Authentication: Implement authentication mechanisms for secure access.
+- CORS Support: Enable Cross-Origin Resource Sharing (CORS) for client-side integrations.
+- Multiplexing: Improve request handling efficiency by implementing HTTP multiplexing.
+- Unit and Integration Tests: Write comprehensive test cases to ensure application reliability.
+- Exception Logging: Implement better error handling and structured logging for debugging.
+
+---
 ## 📌 Endpoints Documentation 
 
    ###   **1. Create a File**  
@@ -41,7 +50,7 @@ body: contnet to append
 GET /ping
 body: contnet to append
 ```
-
+---
 
 ## Technical Details:
 
@@ -70,7 +79,7 @@ body: contnet to append
 - **`RangeRequestsHandler.java`** - Handles `Range` requests for efficient partial content delivery.
 - **`Utilities.java`** - Provides utility functions like timestamp formatting, processing time calculation, and response sending.
 
-
+---
 
 
 ## Installation
