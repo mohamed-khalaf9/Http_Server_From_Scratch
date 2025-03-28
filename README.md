@@ -36,11 +36,11 @@ A multi-threaded HTTP server, built from scratch in Java, efficiently handles **
 ---
 
 ## Future Features and Improvements
-- Authentication: Implement authentication mechanisms for secure access.
-- CORS Support: Enable Cross-Origin Resource Sharing (CORS) for client-side integrations.
-- Multiplexing: Improve request handling efficiency by implementing HTTP multiplexing.
-- Unit and Integration Tests: Write comprehensive test cases to ensure application reliability.
-- Exception Logging: Implement better error handling and structured logging for debugging.
+- **Authentication:** Implement authentication mechanisms for secure access.
+- **CORS Support:** Enable Cross-Origin Resource Sharing (CORS) for client-side integrations.
+- **Multiplexing:** Improve request handling efficiency by implementing HTTP multiplexing.
+- **Unit and Integration Tests:** Write comprehensive test cases to ensure application reliability.
+- **Exception Logging:** Implement better error handling and structured logging for debugging.
 
 ---
 ## Endpoints Documentation 
