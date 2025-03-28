@@ -4,6 +4,7 @@
 - [Overview](#overview)
 - [Features](#features)
 - [Future Features and Improvements](#future-features-and-improvements)
+- [Endpoints Documentation](#endpoints-documentation)
 - [Technical Details](#technical-details)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -42,7 +43,7 @@ A multi-threaded HTTP server, built from scratch in Java, efficiently handles **
 - Exception Logging: Implement better error handling and structured logging for debugging.
 
 ---
-## 📌 Endpoints Documentation 
+## Endpoints Documentation 
 
    ###   **1. Create a File**  
  ```http
