@@ -46,10 +46,10 @@ public class Utilities {
     }
 
     public static void sendResponse(BufferedWriter out, HttpResponse response) throws IOException {
-        synchronized (out){
+        {
             out.write(response.getRawResponse());
             out.newLine();
-            out.flush();
+
         }
 
     }
