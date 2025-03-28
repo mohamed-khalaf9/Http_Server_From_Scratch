@@ -1,4 +1,16 @@
 ﻿# Http_Server_From_Scratch
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Future Features and Improvements](#future-features-and-improvements)
+- [Technical Details](#technical-details)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+
+
 ## Overview
 
 A multi-threaded HTTP server, built from scratch in Java, efficiently handles **concurrent client** requests while supporting modern web optimizations. It features **GZip compression** for reduced response sizes, **range requests** for partial content retrieval, and **ETag caching** to minimize redundant transfers. **Rate limiting** prevents abuse, **keep-alive connections** enhance efficiency, and **logging** provides detailed request tracking. Designed for performance and scalability, this lightweight server is ideal for learning and testing HTTP internals. 
