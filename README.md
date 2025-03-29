@@ -220,9 +220,9 @@ brew install nmap
 ncat --version  
 ```  
 
----
 
-##### Installation Steps  
+
+### Installation Steps  
 
 Once the prerequisites are installed, follow these steps to set up and run the server:  
 
