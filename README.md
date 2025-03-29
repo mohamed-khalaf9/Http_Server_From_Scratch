@@ -72,7 +72,7 @@ body: contnet to append
 
 
 
-### **📂 Project Structure:** 
+### **Project Structure:** 
 
 ##### `src/main/java`
 - **`Main.java`** - Entry point of the application, initializes the HTTP server.
