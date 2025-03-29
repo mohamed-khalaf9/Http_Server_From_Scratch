@@ -1,0 +1,51 @@
+
+ Http-Server 
+4 endpoints: 
+  1-  method: POST, /create/fileName
+  2- method: UPDATE, /update/fileName,  Body: content to add 
+  3- method: GET, /file/FileName
+  4- method: GET, /ping 
+
+Features:
+- Handle concurrent clients
+- Gzip compression (Accept-Encoding Header)
+- Range Requests (Range)
+- Etag Caching (sever generates etag, client send it with If-None-Match)
+- Rate Limiter
+- Logging using log4j2 framewok
+- Connection keep-alive
+- Routing for the above 4 endpoints
+
+
+Test Requests:
+1- create file: 
+curl -i --data "This is file content" -H "Content-Type: application/octet-stream" http://localhost:45321/create/file1.txt
+
+2 update file: 
+curl -i -X UPDATE --data "Hello world, test concurrent clients" -H "Content-Type: application/octet-stream" http://localhost:45321/update/file1.txt
+
+3- Read file contnent : curl -i http://localhost:45321/file/file1.txt
+
+4- Read file content with If-None-Match header:
+ curl -i -H "If-None-Match: f9A4ip_ZVdRdrCdhMFuaJqKNF9DIL8YygycK56w480Y" http://localhost:45321/file/file1.txt
+
+5- Read file content with Accept-Encoding header:
+ curl -i -H "Accept-Encoding: gzip" http://localhost:45321/file/redundant.txt --output -
+
+6- Read file content with Range Header:
+curl -i -H "Range: bytes=44-55" http://localhost:45321/file/redundant.txt
+
+7- Connection keep-alive:
+
+GET /file/test.txt HTTP/1.1
+Host: localhost
+Connection: keep-alive
+
+
+GET /file/file3.txt HTTP/1.1
+Host: localhost
+Connection: close
+
+8- concurrent clients
+9- Test RateLimiter: (allowed 20 request at 1 min)
+  rejected: for /L %j in (1,1,22) do curl -i -X GET http://localhost:45321/ping 
