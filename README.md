@@ -12,11 +12,11 @@
 - [License](#license)
 
 
-##Overview
+## Overview
 
 A multi-threaded HTTP server, built from scratch in Java, efficiently handles **concurrent client** requests while supporting modern web optimizations. It features **GZip compression** for reduced response sizes, **range requests** for partial content retrieval, and **ETag caching** to minimize redundant transfers. **Rate limit** prevents abuse, **keep-alive connections** enhance efficiency, and **logging** provides detailed request tracking. Designed for performance and scalability, this lightweight server is ideal for learning and testing HTTP internals. 
 
-##Features
+## Features
 
 ### 🔗 HTTP Endpoints & Routing  
 - **File Handling**: Supports **creating**, **retrieving**, and **updating** files via HTTP requests.  
