@@ -12,11 +12,11 @@
 - [License](#license)
 
 
-## Overview
+##Overview
 
-A multi-threaded HTTP server, built from scratch in Java, efficiently handles **concurrent client** requests while supporting modern web optimizations. It features **GZip compression** for reduced response sizes, **range requests** for partial content retrieval, and **ETag caching** to minimize redundant transfers. **Rate limiting** prevents abuse, **keep-alive connections** enhance efficiency, and **logging** provides detailed request tracking. Designed for performance and scalability, this lightweight server is ideal for learning and testing HTTP internals. 
+A multi-threaded HTTP server, built from scratch in Java, efficiently handles **concurrent client** requests while supporting modern web optimizations. It features **GZip compression** for reduced response sizes, **range requests** for partial content retrieval, and **ETag caching** to minimize redundant transfers. **Rate limit** prevents abuse, **keep-alive connections** enhance efficiency, and **logging** provides detailed request tracking. Designed for performance and scalability, this lightweight server is ideal for learning and testing HTTP internals. 
 
-## Features
+##Features
 
 ### 🔗 HTTP Endpoints & Routing  
 - **File Handling**: Supports **creating**, **retrieving**, and **updating** files via HTTP requests.  
@@ -24,15 +24,18 @@ A multi-threaded HTTP server, built from scratch in Java, efficiently handles **
 - **Router**: Efficiently routes requests to the correct handlers for structured request processing.  
 
 ### ⚡ Performance Optimizations  
-- **GZip Compression**: Reduces **Requested resource size** using (`Accept-Encoding`) header , lowering **bandwidth usage** and improving **transfer time**, especially for large text-based content.  
+- **GZip Compression**: Reduces **Requested resource size** using (`Accept-Encoding`) header, lowering **bandwidth usage** and improving **transfer time**, especially for large text-based content.  
 - **Range Requests**: Enables partial content retrieval using (`Range`) header, reducing **transfer time** and **bandwidth consumption** by allowing clients to request only specific portions of a file instead of the entire content. Useful for streaming and resuming downloads.  
-- **ETag Caching**: Implements entity tags (`ETag`) with `If-None-Match` headers to avoid redundant data transfers. This optimizes **bandwidth usage**, decreases **latency**, and improves **transfer speed** by ensuring unchanged files are not re-sent.  
+- **ETag Caching**: Implement entity tags (`ETag`) with `If-None-Match` headers to avoid redundant data transfers. This optimizes **bandwidth usage**, decreases **latency**, and improves **transfer speed** by ensuring unchanged files are not re-sent.  
+- **Connection Keep-Alive**: Allows clients to reuse the same TCP connection for multiple requests and responses instead of opening a new connection for each one. This reduces connection overhead, improves latency, increases throughput, and results in better resource utilization on both client and server sides.
+
+
 
 ### 🔒 Security & Traffic Control  
 - **Rate Limiting**: Restricts the number of requests per client within a specified time frame, preventing abuse and ensuring fair resource distribution. This helps maintain **low latency** by avoiding server overload.  
 
-### 📜 Logging & Monitoring  
-- **Log4j2 Integration**: Provides detailed logging of requests and responses, aiding in debugging, monitoring, and analytics.
+### 📜Logging & Monitoring  
+- **Log4j2 Integration**: Provides detailed logging of requests and responses, helping in debugging, monitoring, and analytics.
 ---
 
 ## Future Features and Improvements
@@ -45,7 +48,7 @@ A multi-threaded HTTP server, built from scratch in Java, efficiently handles **
 ---
 ## Endpoints Documentation 
 
-   ###   **1. Create a File**  
+   ### **1. Create a File**  
  ```http
  POST /create/{fileName}
 ```
@@ -67,7 +70,7 @@ body: contnet to append
 
 ## Technical Details:
 
-### **UML Class Diagram:**   [HTTP_SERVER.drawio (2).pdf](https://github.com/user-attachments/files/19511259/HTTP_SERVER.drawio.2.pdf)
+### **UML Class Diagram:** [HTTP_SERVER.drawio (2).pdf](https://github.com/user-attachments/files/19511259/HTTP_SERVER.drawio.2.pdf)
 ![HTTP_SERVER drawio](https://github.com/user-attachments/assets/09e1405d-27b4-4db6-858d-2ab10e17fec6)
 
 
@@ -77,7 +80,7 @@ body: contnet to append
 ##### `src/main/java`
 - **`Main.java`** - Entry point of the application, initializes the HTTP server.
 - **`HttpServer.java`** - Manages server startup, executes client requests using `ExecutorService`.
-- **`ClientHandler.java`** - Handles client requests, parses HTTP requests, applies rate limiting, and logs requests/responses.
+- **`ClientHandler.java`** - Handles client requests, parses HTTP requests, applies rate limit, and logs requests/responses.
 - **`Handler.java`** - Defines request handlers for `GET`, `POST` (create), `UPDATE`, and `ping`.
 - **`Router.java`** - Routes incoming requests to the appropriate handlers.
 - **`HeadersDetector.java`** - Detects and processes headers like `Persistent-Connection`, `Range`, `Accept-Encoding`, and `If-None-Match`.
@@ -86,12 +89,12 @@ body: contnet to append
 - **`HttpRequestLog.java`** - Stores structured request log data.
 - **`HttpResponseLog.java`** - Stores structured response log data.
 - **`LoggingService.java`** - Handles request and response logging using Log4j2 and Gson.
-- **`RateLimiter.java`** - Implements rate limiting to control excessive requests from clients.
+- **`RateLimiter.java`** - Implementes rate limiting to control excessive requests from clients.
 - **`ETagManager.java`** - Manages file ETags for caching and validation.
 - **`GZipCompressor.java`** - Compresses responses using GZip to optimize bandwidth usage.
 - **`RangeRequestsHandler.java`** - Handles `Range` requests for efficient partial content delivery.
 - **`Utilities.java`** - Provides utility functions like timestamp formatting, processing time calculation, and response sending.
-
+ 
 ---
 
 
